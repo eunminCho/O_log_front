@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useState, useEffect, useContext } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import MyComments from '../components/MyComments'
 import Mynft from '../components/Mynft'
 import MyPosts from '../components/MyPosts'
@@ -9,7 +9,6 @@ import Uploadpost from '../components/Uploadpost'
 import { AuthContext, MessageContext } from '../context/store'
 import './Mypage.css'
 
-//[{name:"Fountain Pen #2", description:"블로그를 포스트하고 리워드를 받아보세요. NFT를 통해 리워드를 강화해보세요. 오늘의 Log에서 발행한 NFT입니다.", image:"https://ipfs.infura.io/ipfs/QmRoYzRqVGYyMqFwgmxBoehmJgvfm8uzRkxfS8zQUNtkdk", price:99999, tokenURI:"https://ipfs.infura.io/ipfs/QmYAzGu2TQ9HudYXsGYqXKN6ZmGFGgyca2rtJaChmSkcLX?filename=QmYAzGu2TQ9HudYXsGYqXKN6ZmGFGgyca2rtJaChmSkcLX", tokenId: 2, NFTrewardFactor:2, attributes:[{trait_type:'background-color', value: 'red'}]}]
 export default function Mypage() {
   const [myOLG, setMyOLG] = useState(0)
   const [received, setReceived] = useState(0);
@@ -18,6 +17,9 @@ export default function Mypage() {
   const { authstate } = useContext(AuthContext);
   const { notify } = useContext(MessageContext);
   const location = useLocation();
+  const [page, setPage] = useState([]);
+  const [postPage, setPostPage] = useState(0);
+  const [totalPage, setTotalPage] = useState([]);
 
   useEffect(()=>{
     //console.log(authstate)
@@ -64,12 +66,20 @@ export default function Mypage() {
     })
     .then((res) => {
       //console.log(res.data)
-
-      setMyPosts(res.data)
+      const data = res.data.reverse()
+      setMyPosts(data)
+      let totalNum = data.length%8 ? parseInt(data.length/8) + 1 : data.length/8
+      setTotalPage(new Array(totalNum).fill(1))
+      setPage(data.slice(8*postPage, postPage*8 + 8))
     })
     .catch((err) => {
       console.log(err)
     })
+  }
+
+  const handlePage = (page) => {
+    setPostPage(page);
+    setPage(myPosts.slice(8*page, 8*page + 8))
   }
 
   //내 OLG 요청(status)
@@ -144,7 +154,17 @@ export default function Mypage() {
           </div>
           {location.pathname.slice(8) === authstate.username && myNfts.length ? <Mynft nfts={myNfts}/> : ''}
         </div>
-        <MyPosts myPosts={myPosts}/>
+        <div className='mypage_posts'>
+          <div className='title'>Posts</div>
+          <MyPosts myPosts={page}/>
+          <div className='page_area'>
+            <div className='page_nums'>
+              {totalPage.map((el, idx) => {
+                return <div key={idx} className={postPage === idx ? 'active page_num':'page_num'}  onClick={() => handlePage(idx)}><span>{idx + 1}</span></div>
+              })}
+            </div>
+          </div>
+        </div>
         <div className='mypage_comment'>
           <div className='title'>
             Comments
