@@ -3,7 +3,7 @@ import './Nftcard.css'
 import Modal from '../components/Modal';
 
 export default function Nftcard(props) {
-  const {name, description, image, NFTrewardFactor, tokenURI, tokenId, attributes} = props
+  const {name, description, image, NFTrewardFactor, tokenURI, tokenId, attributes, getNfts, getMyNfts, getMyOLG} = props
 
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -28,12 +28,15 @@ export default function Nftcard(props) {
           <img className='nftcard_image' src={image} />
           <div className='nftcard_content'>
             <span className='name'>{name}</span>
-            <span className='reward'>Level {NFTrewardFactor}</span>
-            <span className='price'>{getPrice()} OLG</span>
+            {NFTrewardFactor? <span className='reward'>Level {NFTrewardFactor}</span> : <span className='reward'>Level 1</span>}
+            {NFTrewardFactor? <span className='price'>{getPrice()} OLG</span> : <span className='price'>100 OLG</span> }
           </div>
         </div>
       </button>
-      <Modal open={modalOpen} close={closeModal} header={name} name={name} description={description} image={image} NFTrewardFactor={NFTrewardFactor} price={getPrice()} tokenURI={tokenURI} tokenId={tokenId} attributes={attributes}>
+      <Modal open={modalOpen} close={closeModal} header={name} 
+      name={name} description={description} image={image} NFTrewardFactor={NFTrewardFactor} 
+      price={getPrice()} tokenURI={tokenURI} tokenId={tokenId} attributes={attributes}
+      getNfts={getNfts} closeModal={closeModal} getMyNfts={getMyNfts} getMyOLG={getMyOLG}>
       </Modal>
     </div>
 

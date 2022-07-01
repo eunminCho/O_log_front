@@ -31,7 +31,7 @@ export default function Uploadpost(props) {
 
   //post 업로드 요청
   const handleSubmit = () => {
-    console.log(authstate)
+    //console.log(authstate)
     setIsLoading(true);
     axios.request({
       method: 'POST',

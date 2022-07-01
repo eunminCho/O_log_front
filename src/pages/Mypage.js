@@ -40,9 +40,31 @@ export default function Mypage() {
 
   //location.pathname의 nft 요청(인증 상관없이)
   const getMyNfts = () => {
-    if(!authstate.auth) {
-      return
-    };
+    if(!(authstate.username === location.pathname.slice(8,))) {
+      axios.request({
+      method: 'GET',
+      url: 'https://olog445.herokuapp.com/offchain/auth/check',
+      withCredentials: true
+    })
+    .then((res) => {
+      axios.request({
+        method: 'GET',
+        url: `https://olog445.herokuapp.com/offchain/nftmarket/myNFT`,
+        withCredentials: true
+      })
+      .then((res)=> {
+        console.log(res.data)
+        setMyNfts(res.data);
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    })
+    .catch((err) => {
+      return;
+    })
+  }
+  else{
     axios.request({
       method: 'GET',
       url: `https://olog445.herokuapp.com/offchain/nftmarket/myNFT`,
@@ -55,6 +77,7 @@ export default function Mypage() {
     .catch((err) => {
       console.log(err)
     })
+  }
   }
 
   //location.pathname의 포스트 요청(인증 상관없이)
@@ -84,21 +107,46 @@ export default function Mypage() {
 
   //내 OLG 요청(status)
   const getMyOLG = () => {
-    if(!(authstate.username === location.pathname.slice(8,))) return;
-
-    axios.request({
-      method: 'GET',
-      url: 'https://olog445.herokuapp.com/offchain/userinfo/status',
-      withCredentials: true
-    })
-    .then((res) => {
-      //console.log(res.data);
-      setMyOLG(res.data.expectedToken + res.data.receivedToken)
-      setReceived(res.data.receivedToken);
-    })
-    .catch((err) => {
-      console.log(err);
-    })
+    if(!(authstate.username === location.pathname.slice(8,))) {
+        axios.request({
+        method: 'GET',
+        url: 'https://olog445.herokuapp.com/offchain/auth/check',
+        withCredentials: true
+      })
+      .then((res) => {
+        axios.request({
+          method: 'GET',
+          url: 'https://olog445.herokuapp.com/offchain/userinfo/status',
+          withCredentials: true
+        })
+        .then((res) => {
+          //console.log(res.data);
+          setMyOLG(res.data.expectedToken + res.data.receivedToken)
+          setReceived(res.data.receivedToken);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+      })
+      .catch((err) => {
+        return;
+      })
+    }
+    else{
+      axios.request({
+        method: 'GET',
+        url: 'https://olog445.herokuapp.com/offchain/userinfo/status',
+        withCredentials: true
+      })
+      .then((res) => {
+        //console.log(res.data);
+        setMyOLG(res.data.expectedToken + res.data.receivedToken)
+        setReceived(res.data.receivedToken);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+    }
   }
 
   //OLG Sync 요청
@@ -152,7 +200,7 @@ export default function Mypage() {
             <span>올린 포스트 </span>
             <span>{myPosts.length} 개</span>
           </div>
-          {location.pathname.slice(8) === authstate.username && myNfts.length ? <Mynft nfts={myNfts}/> : ''}
+          {location.pathname.slice(8) === authstate.username && myNfts.length ? <Mynft nfts={myNfts} getMyNfts={getMyNfts} getMyOLG={getMyOLG} /> : ''}
         </div>
         <div className='mypage_posts'>
           <div className='title'>Posts</div>

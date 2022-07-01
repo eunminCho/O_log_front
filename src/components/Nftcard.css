@@ -6,6 +6,10 @@
   position: relative;box-shadow: 0 3px 4px rgba(0, 0, 0, 0.2);
 }
 
+.mynfts_container .nftcard_button {
+  background-color: #ffffff;
+}
+
 
 .container .nftcard {
   margin: 20px;
@@ -30,7 +34,7 @@
   display: flex;
   flex-direction: column;
   align-items: start;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .nftcard_content > .name{
@@ -45,6 +49,7 @@
 }
 
 .nftcard_content .price{
+  margin-bottom: 8px;
 }
 
 .nftcard_button {
