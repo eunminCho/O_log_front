@@ -16,6 +16,7 @@ export default function Nftcard(props) {
 
   //가격은 레벨에 따라 고정값이라 서버에서 받아오지 않음(보내주긴 하는데 의미없는 것 같아요)
   const getPrice = () => {
+    if(!NFTrewardFactor) return '100'
     if(NFTrewardFactor === 1) return '100'
     else if(NFTrewardFactor === 2) return '100'
     else if(NFTrewardFactor === 3) return '1000'
@@ -29,7 +30,7 @@ export default function Nftcard(props) {
           <div className='nftcard_content'>
             <span className='name'>{name}</span>
             {NFTrewardFactor? <span className='reward'>Level {NFTrewardFactor}</span> : <span className='reward'>Level 1</span>}
-            {NFTrewardFactor? <span className='price'>{getPrice()} OLG</span> : <span className='price'>100 OLG</span> }
+            <span className='price'>{getPrice()} OLG</span>
           </div>
         </div>
       </button>

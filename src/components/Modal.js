@@ -148,7 +148,7 @@ export default function(props){
                     </li>
                     <li>
                       <div className='key'>reward</div>
-                      <div className='value'>{NFTrewardFactor}</div>
+                      <div className='value'>{NFTrewardFactor|| '1'}</div>
                     </li>
                     <li>
                       <div className='key'>price</div>
