@@ -1,16 +1,18 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import './Modal.css';
 import axios from 'axios'
 import { AuthContext, MessageContext } from '../context/store'
 import { useLocation } from 'react-router-dom';
 import './btn.css';
+import Loading from './Loading';
 
 export default function(props){
   // 열기, 닫기, 모달 헤더 텍스트를 부모로부터 받아옴
   // 모달 정보들 모두 부모로부터 받아옴
-  const { open, close, header, name, description, image, price, NFTrewardFactor, tokenURI, tokenId, attributes} = props;
+  const { open, close, header, name, description, image, price, NFTrewardFactor, tokenURI, tokenId, attributes, closeModal, getNfts, getMyNfts, getMyOLG} = props;
   const {authstate} = useContext(AuthContext);
   const {notify} = useContext(MessageContext);
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
   console.log(props);
   //console.log("clsoe console",close)
@@ -36,6 +38,7 @@ export default function(props){
         if(path[1] == 'marketplace'){
           //console.log("구매하기 axios");
           let body = { tokenURI: tokenURI}
+          setIsLoading(true);
           axios.request({
             method: 'POST',
             url:'https://olog445.herokuapp.com/onchain/serverNFTBuy',
@@ -54,11 +57,15 @@ export default function(props){
               notify('민팅에 실패했습니다!\n잠시후 다시 시도해 주세요', 'error')
             }else {
             //console.log(res.data);
-            notify('구매성공!');
+            notify('구매성공!', 'success');
+            closeModal();
+            getNfts()
           }
+          setIsLoading(false);
           })
           .catch((err) => {
             console.log(err);
+          setIsLoading(false);
           })
      
         }
@@ -66,49 +73,50 @@ export default function(props){
  //mypage에서는 강화하기 진행
  //test 필요!
  if(path[1] == 'mypage'){
+  setIsLoading(true);
   axios.request({
     method: 'POST',
     url:'https://olog445.herokuapp.com/onchain/upgradeNFT',
-    data: { username: authstate.username, tokenId : tokenId},
+    data: { tokenId : tokenId},
     withCredentials: true
   })
   .then((res) => {
-    if(res.data === '0'){
-      //모달 닫기
+    if(res.data === 0){
       console.log("ping1");
-      notify('강화에 실패했습니다! 다시 시도해 주세요', 'error')
+      notify('강화에 실패했습니다! 다시 시도해 주세요')
     }
-    else if(res.data === '1'){
-      //모달 닫기
+    else if(res.data === 1){
       console.log("ping2");
-      notify('레벨 1 -> 레벨 2 로 강화되었습니다!')
-      //getmyNft 다시 호출
+      notify('레벨 1 -> 레벨 2 로 강화되었습니다!', 'success')
+      closeModal();
+      getMyNfts();
+      getMyOLG();
     }
-    else if(res.data === '2'){
-      //모달 닫기
+    else if(res.data === 2){
       console.log("ping3");
-      notify('레벨 2 -> 레벨 3 으로 강화되었습니다!')
-      //getmyNft 다시 호출
+      notify('레벨 2 -> 레벨 3 으로 강화되었습니다!', 'success')
+      closeModal();
+      getMyNfts();
+      getMyOLG();
     }else if(res.data === 'Not enough balance'){
       console.log("ping4");
       notify('사용가능한 토큰이 부족합니다!', 'error')
-
-        }else {
-        console.log("ping5",res.data)
-        notify('강화성공!');
+      closeModal();
+    }else {
+    console.log("ping5",res.data)
     }
-        //console.log('강화하기 응답입니다.',res)
-        console.log("ping6");
-    })
-      .catch((err) => {
-        console.log("pint7",err);
-        notify('Error \n 관리자에게 문의해주세요!', 'error');
-      })
-    }
-  }
-  
+    //console.log('강화하기 응답입니다.',res)
+    console.log("ping6", res.data);
+    setIsLoading(false);
+  })
+  .catch((err) => {
+    console.log("pint7",err);
+    notify('Error \n 관리자에게 문의해주세요!', 'error');
+    setIsLoading(false);
 
-
+  })
+}
+}
 
   return (
     // 모달이 열릴때 openModal 클래스가 생성된다.
@@ -127,7 +135,7 @@ export default function(props){
             <div>
               <div className = 'modal_grid'>
                 <div className = 'g1'>
-                  <img className='nftcard_image' src={image} />
+                  <img className='nftmodal_image' src={image} />
                 </div>
                 <div className = 'g2'>
                       <div className='key'>description</div>
@@ -136,15 +144,15 @@ export default function(props){
                   <br></br>
 
                   <button className='btn-gradient cyan mini'>
-                    <span>🏆Level</span> | {NFTrewardFactor ? NFTrewardFactor : "none"}
+                    <span> 🏆 Level</span> | {NFTrewardFactor ? NFTrewardFactor : "none"}
                   </button>
                         
                   <button className='btn-gradient  blue  mini'>
-                    <span>🪙price</span> | {price ? price : "none"}
+                    <span> 🪙 price</span> | {price ? price : "none"}
                   </button>
 
                   <button className='btn-gradient purple mini'>
-                    <span>📜attributes</span> | {attributes[0].trait_type}: {attributes[0].value}
+                    <span> 📜 attributes</span> | {attributes[0].trait_type}: {attributes[0].value}
                   </button>
                 </div>
                 
@@ -157,6 +165,7 @@ export default function(props){
           </footer>
         </section>
       ) : null}
+      {isLoading? <Loading />:''}
     </div>
   );
 };

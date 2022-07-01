@@ -1,16 +1,4 @@
-* {
-    box-sizing: border-box;
-  }
-  body {
-    margin: 0;
-    background: #eaedf1;
-    font-family: 'Lato', sans-serif;
-  }
-  .header {
-    background: white;
-    padding: 30px;
-    text-align: center;
-  }
+
   .header h1 {
     font-weight: 300;
     display: inline;
@@ -69,21 +57,16 @@
   pre .att {color: #a6a926;} /* attribute */
   pre .val {color: #e6db74;} /* value */
   
-  .btn-container, .container {
-    background-color: white;
-    border-radius: 4px;
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  .container h2 {
-    padding-top: 30px;
-    font-weight: 300;
-  }
   .btn, .btn-two {
     margin: 9px;
   }
   .btn-gradient {
     margin: 5px;
+  }
+
+  .btn-gradient span {
+    font-size: 15px;
+    margin: 2px;
   }
   a[class*="btn"] {text-decoration: none;}
   input[class*="btn"], 

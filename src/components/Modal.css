@@ -83,7 +83,7 @@
   font-weight: bold;
 }
 
-g2.li.value{
+.g2.li.value{
   margin-left: 85px;
 }
 
@@ -115,7 +115,7 @@ g2.li.value{
 }
 
 
-.nftcard_image{
+.nftmodal_image{
   position: relative;
   width: 170px;
   height: 200px;
