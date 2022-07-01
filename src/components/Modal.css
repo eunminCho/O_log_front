@@ -14,8 +14,7 @@
   border: 0;
 }
 .modal > section {
-  width: 90%;
-  max-width: 630px;
+  width: 550px;;
   margin: 0 auto;
   border-radius: 0.3rem;
   background-color: #fff;
@@ -65,25 +64,27 @@
 
 .modal_grid {
   display: grid;
-  grid-template-columns: 30% 70%;
+  grid-template-columns: 40% 60%;
 }
-
 .g1{
-  
+  width: 100px;
 }
-
 .g2{
-  margin: 10px
+  margin: 10px;
+  text-align: left;
 }
 
-.g2 li{
+.g2.li{
   display: flex;
-  justify-content: space-between;
   margin: 10px 0;
 }
 
-.g2 li .key{
-  color: var(--sub-text-color);
+.key{
+  font-weight: bold;
+}
+
+g2.li.value{
+  margin-left: 85px;
 }
 
 
@@ -113,9 +114,14 @@
   }
 }
 
-.g1.nftcard_image{
+.nftcard_image{
   position: relative;
-  width: 100%;
+  width: 170px;
   height: 200px;
   z-index: 1;
+}
+
+
+.header_text{
+  position: absolute;
 }
