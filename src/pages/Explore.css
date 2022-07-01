@@ -1,6 +1,8 @@
 .explore {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
 }
 
 .container {
@@ -8,4 +10,35 @@
   flex-flow: row wrap;
   min-width: 1200px;
   margin-top: 50px;
+}
+
+.explore_page_area {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.explore_page_nums {
+  margin: 0px 0 50px 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+.explore_page_num {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  color: var(--sub-text-color);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 19px;
+  margin: 0 8px;
+}
+
+.explore_page_nums > .active{
+  color: var(--green-color);
+  font-weight: bold;
 }

@@ -47,6 +47,7 @@ export default function Marketplace() {
             tokenURI={el.tokenURI}
             price={el.price}
             attributes={el.attributes}
+            getNfts ={getNfts}
             />
         })}
       </div>
