@@ -21,75 +21,87 @@ export default function(props){
   }else if(path[1] == 'mypage'){
     btn_nftcart = '강화하기';
   }
-  
-  // axios.request({
-  //   method: 'GET',
-  //   url:'http://localhost:3030/offchain/nftmarket/myNFT',
-  // })
-  // .then((res) => {
-  //   console.log('myNFT 응답입니다.',res.data.tokenURI)
-  // })
-  // .catch((err) => console.log(err))
-  
-
   const handleSubmit = () => {
-     //인증 여부 확인 후 post 요청
-    if(!authstate.auth) {
-      alert('로그인 필요')
-      return;
-    }
+    //인증 여부 확인 후 post 요청
+   if(!authstate.auth) {
+     alert('로그인 필요')
+     return;
+   }
 
-      //구매하기 눌렀을때, tokenUri 만 보냄
-    if(path[1] == 'marketplace'){
-      console.log("구매하기 axios");
-      axios.request({
-        method: 'POST',
-        url:'https://olog445.herokuapp.com/onchain/serverNFYBuy',
-        data: { tokenURI: "kkk_tokenuri"},
-        withCredentials: true
-      })
-      .then((res) => {
-        console.log('구매하기 응답입니다.',res)
-        //alret울림...?
-      })
-      .catch((err) => console.log(err))
-    }
+     //구매하기 눌렀을때, tokenUri 만 보냄
+   if(path[1] == 'marketplace'){
+     //console.log("구매하기 axios");
+     let body = { tokenURI: tokenURI}
+     axios.request({
+       method: 'POST',
+       url:'https://olog445.herokuapp.com/onchain/serverNFTBuy',
+       data: body,
+       withCredentials: true
+     })
+     .then((res) => {
+       if(res.data === "Please proceed wallet synchronization"){
+         notify('Mypage에서 Wallet Sync를 진행해주세요', 'error')
+       }else if(res.data ==="Not logged in"){
+         notify('로그인을 해주세요!', 'error')
+       }else if(res.data ==="You don't have enough balance"){
+         notify('토큰이 부족합니다', 'error')
+         open = false;
+       }else if(res.data ==="Minting Failed"){
+         notify('민팅에 실패했습니다!\n잠시후 다시 시도해 주세요', 'error')
+       }else {
+       //console.log(res.data);
+       notify('구매성공!');
+     }
+     })
+     .catch((err) => {
+       console.log(err);
+     })
+     
+   }
 
-  //mypage에서는 강화하기 진행
-  //test 필요!
-  //username 안보내도 됨!
-    if(path[1] == 'mypage'){
-      axios.request({
-        method: 'POST',
-        url:'https://olog445.herokuapp.com/onchain/upgradeNFT',
-        data: {tokenId : tokenId},
-        withCredentials: true
-      })
-      .then((res) => {
-        if(res.data === '0'){
-          //모달 닫기
-          notify('강화에 실패했습니다! 다시 시도해 주세요', 'error')
-        }
-        else if(res.data === '1'){
-          //모달 닫기
-          notify('레벨 1 -> 레벨 2 로 강화되었습니다!')
-          //getmyNft 다시 호출
-        }
-        else if(res.data === '2'){
-          //모달 닫기
-          notify('레벨 2 -> 레벨 3 으로 강화되었습니다!')
-          //getmyNft 다시 호출
-        }
-        else console.log(res.data)
-        console.log('강화하기 응답입니다.',res)
-        //alret울림...?
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-    }
+ //mypage에서는 강화하기 진행
+ //test 필요!
+   if(path[1] == 'mypage'){
+     axios.request({
+       method: 'POST',
+       url:'https://olog445.herokuapp.com/onchain/upgradeNFT',
+       data: { username: authstate.username, tokenId : tokenId},
+       withCredentials: true
+     })
+     .then((res) => {
+       if(res.data === '0'){
+         //모달 닫기
+         console.log("ping1");
+         notify('강화에 실패했습니다! 다시 시도해 주세요', 'error')
+       }
+       else if(res.data === '1'){
+         //모달 닫기
+         console.log("ping2");
+         notify('레벨 1 -> 레벨 2 로 강화되었습니다!')
+         //getmyNft 다시 호출
+       }
+       else if(res.data === '2'){
+         //모달 닫기
+         console.log("ping3");
+         notify('레벨 2 -> 레벨 3 으로 강화되었습니다!')
+         //getmyNft 다시 호출
+       }else if(res.data === 'Not enough balance'){
+         console.log("ping4");
+         notify('사용가능한 토큰이 부족합니다!', 'error')
 
-  }
+       }else {
+       console.log("ping5",res.data)
+       notify('강화성공!');
+   }
+       //console.log('강화하기 응답입니다.',res)
+       console.log("ping6");
+   })
+     .catch((err) => {
+       console.log("pint7",err);
+       notify('Error \n 관리자에게 문의해주세요!', 'error');
+     })
+   }
+ }
       
 
 
