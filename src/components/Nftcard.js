@@ -23,7 +23,7 @@ export default function Nftcard(props) {
 
   return (
     <div>
-        <button style= {{border: "none"}} onClick={openModal} >
+        <button className='nftcard_button' onClick={openModal} >
           <div className='nftcard'>
           <img className='nftcard_image' src={image} />
           <div className='nftcard_content'>
